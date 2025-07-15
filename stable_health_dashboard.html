@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Analytics Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <style>
+        :root {
+            --toucan-black: #1a1a1a;
+            --toucan-white: #ffffff;
+            --toucan-orange: #ff6b35;
+            --toucan-yellow: #f9ca24;
+            --toucan-blue: #3742fa;
+            --toucan-light-blue: #70a1ff;
+            --card-bg: #0f0f0f;
+            --card-border: #333333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: var(--toucan-black);
+            color: var(--toucan-white);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--toucan-orange), var(--toucan-yellow), var(--toucan-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #cccccc;
+            font-size: 1.1rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-top: 3px solid var(--toucan-orange);
+        }
+
+        .metric-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .metric-icon {
+            font-size: 1.5rem;
+            margin-right: 0.75rem;
+        }
+
+        .metric-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #cccccc;
+            text-transform: uppercase;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--toucan-orange);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-subtitle {
+            color: #999999;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .metric-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+
+        .metric-detail {
+            text-align: center;
+        }
+
+        .metric-detail-value {
+            font-weight: 600;
+            color: var(--toucan-blue);
+        }
+
+        .charts-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .chart-container {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-top: 3px solid var(--toucan-blue);
+            height: 450px;
+        }
+
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--toucan-white);
+        }
+
+        .chart-wrapper {
+            height: 350px;
+            width: 100%;
+            position: relative;
+        }
+
+        .insights-section {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 2rem;
+            border-top: 3px solid var(--toucan-yellow);
+        }
+
+        .insights-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            color: var(--toucan-white);
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .insight-card {
+            background: var(--toucan-black);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            border-left: 4px solid var(--toucan-orange);
+        }
+
+        .insight-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .insight-icon {
+            font-size: 1.3rem;
+            margin-right: 1rem;
+            color: var(--toucan-orange);
+        }
+
+        .insight-title {
+            font-weight: 600;
+        }
+
+        .insight-desc {
+            color: #cccccc;
+            line-height: 1.5;
+        }
+
+        .alert-card {
+            border-left-color: var(--toucan-yellow);
+            background: rgba(249, 202, 36, 0.1);
+        }
+
+        .alert-card .insight-icon {
+            color: var(--toucan-yellow);
+        }
+
+        @media (max-width: 768px) {
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .insights-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>My Health Dashboard</h1>
+            <p>Comprehensive Sleep, Activity & Vital Signs Analysis</p>
+        </div>
+
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-icon">😴</span>
+                    <span class="metric-title">Sleep Quality</span>
+                </div>
+                <div class="metric-value">85.5%</div>
+                <div class="metric-subtitle">Average Sleep Efficiency</div>
+                <div class="metric-details">
+                    <div class="metric-detail">
+                        <div class="metric-detail-value">8.5h</div>
+                        <div>Duration</div>
+                    </div>
+                    <div class="metric-detail">
+                        <div class="metric-detail-value">20.5%</div>
+                        <div>Deep Sleep</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-icon">❤️</span>
+                    <span class="metric-title">Heart Rate</span>
+                </div>
+                <div class="metric-value">53</div>
+                <div class="metric-subtitle">Average BPM</div>
+                <div class="metric-details">
+                    <div class="metric-detail">
+                        <div class="metric-detail-value">37</div>
+                        <div>Sleep Min</div>
+                    </div>
+                    <div class="metric-detail">
+                        <div class="metric-detail-value">104</div>
+                        <div>Activity Max</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-icon">🔄</span>
+                    <span class="metric-title">HRV Recovery</span>
+                </div>
+                <div class="metric-value">83ms</div>
+                <div class="metric-subtitle">Average HRV</div>
+                <div class="metric-details">
+                    <div class="metric-detail">
+                        <div class="metric-detail-value">22ms</div>
+                        <div>Sleep Low</div>
+                    </div>
+                    <div class="metric-detail">
+                        <div class="metric-detail-value">154ms</div>
+                        <div>Recovery High</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-icon">🚶</span>
+                    <span class="metric-title">Daily Activity</span>
+                </div>
+                <div class="metric-value">4,553</div>
+                <div class="metric-subtitle">Average Steps</div>
+                <div class="metric-details">
+                    <div class="metric-detail">
+                        <div class="metric-detail-value">2,014</div>
+                        <div>Calories/Day</div>
+                    </div>
+                    <div class="metric-detail">
+                        <div class="metric-detail-value">7,213</div>
+                        <div>Best Day</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-icon">🫁</span>
+                    <span class="metric-title">Oxygen Saturation</span>
+                </div>
+                <div class="metric-value">96.1%</div>
+                <div class="metric-subtitle">Average SpO2</div>
+                <div class="metric-details">
+                    <div class="metric-detail">
+                        <div class="metric-detail-value">88%</div>
+                        <div>Minimum</div>
+                    </div>
+                    <div class="metric-detail">
+                        <div class="metric-detail-value">100%</div>
+                        <div>Maximum</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="charts-section">
+            <div class="chart-container">
+                <div class="chart-title">Sleep Stages Distribution</div>
+                <div class="chart-wrapper">
+                    <canvas id="sleepStagesChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">Heart Rate & Sleep Quality</div>
+                <div class="chart-wrapper">
+                    <canvas id="heartRateChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="charts-section">
+            <div class="chart-container">
+                <div class="chart-title">HRV & Recovery Trends</div>
+                <div class="chart-wrapper">
+                    <canvas id="hrvChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">Activity vs Sleep</div>
+                <div class="chart-wrapper">
+                    <canvas id="activityChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="insights-section">
+            <div class="insights-title">🔍 Key Health Data</div>
+            
+            <div class="insights-grid">
+                <div class="insight-card alert-card">
+                    <div class="insight-header">
+                        <span class="insight-icon">💓</span>
+                        <span class="insight-title">Sleep Heart Rate Data</span>
+                    </div>
+                    <div class="insight-desc">
+                        Heart rate drops to 37-42 BPM during sleep. Average sleep heart rate: 40 BPM. Awake heart rate: 53 BPM average.
+                    </div>
+                </div>
+
+                <div class="insight-card">
+                    <div class="insight-header">
+                        <span class="insight-icon">🎯</span>
+                        <span class="insight-title">HRV Range Data</span>
+                    </div>
+                    <div class="insight-desc">
+                        HRV ranges from 22ms (deep sleep) to 154ms (recovery). Total range: 132ms. Average HRV: 83ms.
+                    </div>
+                </div>
+
+                <div class="insight-card">
+                    <div class="insight-header">
+                        <span class="insight-icon">💤</span>
+                        <span class="insight-title">Sleep Architecture Data</span>
+                    </div>
+                    <div class="insight-desc">
+                        20.5% deep sleep and 17.1% REM sleep. Sleep efficiency: 85.5%. Average sleep duration: 8.5 hours.
+                    </div>
+                </div>
+
+                <div class="insight-card">
+                    <div class="insight-header">
+                        <span class="insight-icon">📊</span>
+                        <span class="insight-title">Cardiovascular Data</span>
+                    </div>
+                    <div class="insight-desc">
+                        8 out of 10 nights with bradycardia (≤40 BPM) during sleep. Recovery heart rate ratio: 0.72. SpO2 average: 96.1%.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // Chart colors
+            const colors = {
+                orange: '#ff6b35',
+                yellow: '#f9ca24', 
+                blue: '#3742fa',
+                lightBlue: '#70a1ff',
+                white: '#ffffff'
+            };
+
+            // Data
+            const sleepStages = {
+                deepSleep: 104,
+                remSleep: 87,
+                lightSleep: 318,
+                awake: 55
+            };
+
+            const heartRateData = [60, 52, 53, 54, 50, 54, 52, 54, 52, 49];
+            const minHeartRate = [42, 41, 37, 37, 39, 38, 38, 37, 38, 37];
+            const sleepEfficiency = [80, 90, 92, 82, 82, 81, 86, 90, 83, 89];
+            const hrvData = [84, 76, 74, 78, 83, 83, 83, 91, 87, 87];
+            const stepsData = [5557, 5976, 4059, 4817, 2951, 4819, 3028, 4482, 7213, 2397];
+            const dates = ['Jul 5', 'Jul 6', 'Jul 7', 'Jul 9', 'Jul 10', 'Jul 11', 'Jul 12', 'Jul 13', 'Jul 14', 'Jul 15'];
+
+            // Sleep Stages Chart
+            new Chart(document.getElementById('sleepStagesChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Deep Sleep', 'REM Sleep', 'Light Sleep', 'Awake'],
+                    datasets: [{
+                        data: [sleepStages.deepSleep, sleepStages.remSleep, sleepStages.lightSleep, sleepStages.awake],
+                        backgroundColor: [colors.blue, colors.lightBlue, colors.yellow, colors.orange],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: colors.white }
+                        }
+                    }
+                }
+            });
+
+            // Heart Rate Chart
+            new Chart(document.getElementById('heartRateChart'), {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [
+                        {
+                            label: 'Sleep HR (Min)',
+                            data: minHeartRate,
+                            borderColor: colors.orange,
+                            backgroundColor: colors.orange + '20',
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Sleep Efficiency (%)',
+                            data: sleepEfficiency,
+                            borderColor: colors.blue,
+                            backgroundColor: colors.blue + '20',
+                            tension: 0.4,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: colors.white } }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#cccccc' } },
+                        y: {
+                            title: { display: true, text: 'Heart Rate (BPM)', color: colors.white },
+                            ticks: { color: '#cccccc' }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: { display: true, text: 'Sleep Efficiency (%)', color: colors.white },
+                            ticks: { color: '#cccccc' },
+                            grid: { drawOnChartArea: false }
+                        }
+                    }
+                }
+            });
+
+            // HRV Chart
+            new Chart(document.getElementById('hrvChart'), {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'HRV (ms)',
+                        data: hrvData,
+                        borderColor: colors.blue,
+                        backgroundColor: colors.blue + '20',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: colors.white } }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#cccccc' } },
+                        y: {
+                            title: { display: true, text: 'HRV (ms)', color: colors.white },
+                            ticks: { color: '#cccccc' }
+                        }
+                    }
+                }
+            });
+
+            // Activity Chart
+            new Chart(document.getElementById('activityChart'), {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Steps vs Sleep Efficiency',
+                        data: stepsData.map((steps, i) => ({ x: steps, y: sleepEfficiency[i] })),
+                        backgroundColor: colors.orange,
+                        borderColor: colors.orange,
+                        pointRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: colors.white } }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Daily Steps', color: colors.white },
+                            ticks: { color: '#cccccc' }
+                        },
+                        y: {
+                            title: { display: true, text: 'Sleep Efficiency (%)', color: colors.white },
+                            ticks: { color: '#cccccc' }
+                        }
+                    }
+                }
+            });
+
+        });
+    </script>
+</body>
+</html> 
