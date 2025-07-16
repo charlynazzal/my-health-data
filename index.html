@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Data Dashboard - July 1-15, 2025</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #1a1a1a;
+            color: #ffffff;
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ff6b35, #f9ca24, #3742fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #cccccc;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-card {
+            background: #0f0f0f;
+            border: 1px solid #333333;
+            border-radius: 12px;
+            padding: 2rem;
+            transition: transform 0.2s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            border-color: #ff6b35;
+        }
+
+        .dashboard-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #ff6b35;
+        }
+
+        .dashboard-desc {
+            color: #cccccc;
+            margin-bottom: 1.5rem;
+        }
+
+        .dashboard-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff6b35, #f9ca24);
+            color: #1a1a1a;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+
+        .dashboard-link:hover {
+            transform: scale(1.05);
+        }
+
+        .info-section {
+            background: #0f0f0f;
+            border: 1px solid #333333;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: left;
+        }
+
+        .info-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #3742fa;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .metric-item {
+            background: #1a1a1a;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 3px solid #70a1ff;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: #cccccc;
+        }
+
+        .metric-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Health Data Dashboard</h1>
+        <p class="subtitle">July 1-15, 2025 | Interactive Health Analytics</p>
+        
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <div class="dashboard-title">Complete Health Dashboard</div>
+                <div class="dashboard-desc">
+                    Comprehensive view of all health metrics including sleep, activity, heart rate, HRV, and SpO2 data
+                </div>
+                <a href="stable_health_dashboard.html" class="dashboard-link">View Dashboard</a>
+            </div>
+            
+            <div class="dashboard-card">
+                <div class="dashboard-title">Sleep Analysis Dashboard</div>
+                <div class="dashboard-desc">
+                    Detailed sleep stage analysis with HRV correlation and comprehensive sleep architecture breakdown
+                </div>
+                <a href="sleep_analytics.html" class="dashboard-link">View Sleep Analysis</a>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <div class="info-title">Key Health Metrics Summary</div>
+            <div class="metrics-grid">
+                <div class="metric-item">
+                    <div class="metric-label">Sleep Efficiency</div>
+                    <div class="metric-value">85.5%</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Deep Sleep</div>
+                    <div class="metric-value">20.5%</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">REM Sleep</div>
+                    <div class="metric-value">17.1%</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Average Heart Rate</div>
+                    <div class="metric-value">53 BPM</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Sleep Heart Rate</div>
+                    <div class="metric-value">37-42 BPM</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">HRV Average</div>
+                    <div class="metric-value">83ms</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">SpO2 Average</div>
+                    <div class="metric-value">96.1%</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Daily Steps</div>
+                    <div class="metric-value">4,553</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

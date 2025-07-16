@@ -18,7 +18,13 @@ This repository contains health data analysis and interactive dashboards for the
 - `requirements.txt` - Python dependencies for data processing
 
 ## How to View
-1. Download the HTML files
+### Direct Links (GitHub Pages)
+- **Main Dashboard**: https://charlynazzal.github.io/my-health-data/
+- **Complete Health Dashboard**: https://charlynazzal.github.io/my-health-data/stable_health_dashboard.html
+- **Sleep Analysis Dashboard**: https://charlynazzal.github.io/my-health-data/sleep_analytics.html
+
+### Alternative Method
+1. Download the HTML files from this repository
 2. Open `stable_health_dashboard.html` or `sleep_analytics.html` in any web browser
 3. No additional software required - dashboards are fully self-contained
 
